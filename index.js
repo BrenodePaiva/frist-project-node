@@ -18,13 +18,23 @@ app.get("/users", (request, response) => {
 })
 
 app.post("/users", (request, response) => {
-    const {name, age} = request.body
+    
+    try {
+        const {name, age} = request.body
 
-    const user = {id:uuid.v4(), name, age}
+        if (age < 18 ) throw new Error("Only allowed users over 18 years old") 
+            
+        const user = {id:uuid.v4(), name, age}
 
-    users.push(user)
+        users.push(user)
 
-    return response.status(201).json(user)
+        return response.status(201).json(user)
+        
+    } catch (err) {
+        return response.status(400).json({error: err.message})
+    }finally{
+        console.log("Terminou Tudo")
+    }
 })
 
 const checkUserIdMiddleware = ("/users/:id", (request, response, next) => {
